@@ -3,7 +3,9 @@ const startButton = document.getElementById('start-btn');
 const questionEl = document.getElementById('quiz-question-container');
 const questionActual = document.getElementById('question'); 
 const clockEl = document.getElementById('clock-counter'); 
-var currentQuestionIndex = 0; 
+const answerButtonsElement = document.getElementById('answer-buttons')
+
+var i = 0; 
 var clock = 60; 
 
 
@@ -13,31 +15,52 @@ startButton.addEventListener('click', startQuiz);
 
 //Function for beginning quiz 
 function startQuiz() {
-var intervalClock = setInterval(timerCountdown, 1000); 
+//Start the countdown clock 
+var intervalClock = setInterval(timerCountdown, 1000);
+//Hide the start button
 startButton.className = "hidden"; 
+//Remove the hidden class and therefor display:none from the Quiz question container 
 questionEl.classList.remove("hidden");
-nextQuestion(); 
+showNextQuestion(); 
 }
 
 //function for each consecutive question 
-function nextQuestion() {
- questionActual.innerText = questionsObject.question; 
+function showNextQuestion() {
+ questionActual.innerText = questionsArray[i].question; 
+ questionsArray[i].answers.forEach(answer => {
+   var button = document.createElement('button');
+   button.innerText = answer.text; 
+   button.classList.add('btn-answers');
+   answerButtonsElement.appendChild(button);
+   console.log(answer);
+ });
+ 
+/* const button = document.createElementById('button'); 
+ button.innerText = answer.text; 
+ button.classList.add('btn')
+    if (answer.correct) {
+      button.dataset.correct = answer.correct
+    }
+    button.addEventListener('click', selectAnswer)
+    answerButtonsElement.appendChild(button)
+ return i++; 
+ */
+  }
 
-}
 
 function timerCountdown() {
   if (clock <= 0){
-    clearInterval(intervalClock); 
+    clearInterval(intervalClock); //Need to fix 
     return; 
   } else{
       clock--; 
-      clockEl.innerText = clock; 
+      clockEl.innerText = ('Time: ' + clock); 
       return clock; 
     }
   }
 
 
-const questionsObject = [
+const questionsArray = [
   {
     question: 'Which part of the html is the correct place to insert the JavaScript source file?', 
     answers: [
@@ -47,7 +70,7 @@ const questionsObject = [
       {text: '4. The end of the body', correct: true}
     ]
   }, 
-  {
+   { 
     question: 'Key-value pairs can be stored in localStorage as: ', 
     answers: [
       {text: '1. Objects ', correct: false}, 
@@ -73,5 +96,5 @@ const questionsObject = [
       {text: '3. $javascript', correct: false}, 
       {text: '4. -javascript', correct: true}
      ]
-  }
+  } 
 ]

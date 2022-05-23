@@ -57,7 +57,7 @@ button {
   margin: 5px 5px 15px 5px;  
 }
 
-.btn-answers button{
+.btn-answers {
   display: block; 
   font-size: 25px; 
   background-color: hsl(blue, 100%, 50%);
