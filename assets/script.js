@@ -6,12 +6,15 @@ const clockEl = document.getElementById('clock-counter');
 const answerButtonsElement = document.getElementById('answer-buttons')
 
 var i = 0; 
-var clock = 60; 
+var clock = 7; 
 var score = 0; 
-
+var penalty = 5; 
+//Need to declare a variable for the setInterval/clearInterval 
+var intervalClock = 0; 
 
 //Add event listener for Start Button 
 startButton.addEventListener('click', startQuiz);
+
 
 
 //Function for beginning quiz 
@@ -22,47 +25,77 @@ var intervalClock = setInterval(timerCountdown, 1000);
 startButton.className = "hidden"; 
 //Remove the hidden class and therefor display:none from the Quiz question container 
 questionEl.classList.remove("hidden");
-showNextQuestion(); 
+showFirstQuestion(); 
 }
 
 //function for each consecutive question 
-function showNextQuestion() {
+function showFirstQuestion() {
+  
+  while (answerButtonsElement.firstChild) {
+    answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+  }
+  // check if we have run out of questions. If so, go to the final page: 
+ 
  questionActual.innerText = questionsArray[i].question; 
  questionsArray[i].answers.forEach(answer => {
-   var button = document.createElement('button');
+   const button = document.createElement('button');
    button.innerText = answer.text; 
    button.classList.add('btn-answers');
    answerButtonsElement.appendChild(button);
+
+     // this if statement is just counting everything by accident, all true and false so need to fix! 
    if (answer.correct) {
      button.dataset.correct = answer.correct; 
+     localStorage.setItem("PlayerScore", JSON.stringify(score));
+     score++;
+     console.log(score);
+     
    }
-   button.addEventListener('click', answerSelection);
+
+   button.addEventListener('click', showFirstQuestion);
   })
+  //increment the question index 
+  i++; 
+  if ( i >= questionsArray.length) {
+    lastPage(); 
+    
+  }
 }
 
-// store the player score and 
-function answerSelection(e) {
-    localStorage.setItem("PlayerScore", JSON.stringify(score));
-    score++;
-    console.log(score);
-    resetPage(); 
-    } 
+//Create end of quiz display
+function lastPage() {
+  // Make sure the clock clears and there is nothing on the page. 
+  clock=0;  
+  questionEl.innerHTML = "<h1>End of Quiz! Here are your results:</h1>"; 
+  questionEl.className = "endpage"; // need to fix 
+  clockEl.innerHTML = ""; 
+ 
+  //create a paragraph to write results in 
+    
+  var createParaText = document.createElement("p"); 
+  createParaText.textContent = "You final score is " + score;
+  questionEl.appendChild(createParaText);  
   
-   
-  //present the next set of questions and answers 
-  function resetPage() {
-    questionActual.innerText = ""; 
-    i++; 
-    console.log(i); 
-    questionActual.innerText = questionsArray[i].question;
-    while (answerButtonsElement.firstChild) {
-      answerButtonsElement.removeChild(answerButtonsElement.firstChild);
-    } 
-  }
+  var initialsPlease = document.createElement('label'); 
+  initialsPlease.setAttribute('id', 'initials'); // Need to make in CSS
+  initialsPlease.textContent = "Enter your initials: "; 
+
+  var formEntry = document.createElement('input'); 
+  formEntry.setAttribute('type', 'text'); 
+  formEntry.setAttribute('id', 'intials'); 
+  formEntry.textContent = "Enter Here"; 
+  questionActual.appendChild(formEntry); 
+
+  
+
+
+}
 
 function timerCountdown() {
-  if (clock <= 0){
-    clearInterval(clock); //Need to fix 
+  //If the timer runs out, you need to clear the setinterval and reveal the final page
+  if (clock === 0){
+    clearInterval(intervalClock); 
+    lastPage(); 
     return; 
   } else{
       clock--; 
