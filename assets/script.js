@@ -7,6 +7,7 @@ const answerButtonsElement = document.getElementById('answer-buttons')
 
 var i = 0; 
 var clock = 60; 
+var score = 0; 
 
 
 //Add event listener for Start Button 
@@ -32,25 +33,36 @@ function showNextQuestion() {
    button.innerText = answer.text; 
    button.classList.add('btn-answers');
    answerButtonsElement.appendChild(button);
-   console.log(answer);
- });
- 
-/* const button = document.createElementById('button'); 
- button.innerText = answer.text; 
- button.classList.add('btn')
-    if (answer.correct) {
-      button.dataset.correct = answer.correct
-    }
-    button.addEventListener('click', selectAnswer)
-    answerButtonsElement.appendChild(button)
- return i++; 
- */
-  }
+   if (answer.correct) {
+     button.dataset.correct = answer.correct; 
+   }
+   button.addEventListener('click', answerSelection);
+  })
+}
 
+// store the player score and 
+function answerSelection(e) {
+    localStorage.setItem("PlayerScore", JSON.stringify(score));
+    score++;
+    console.log(score);
+    resetPage(); 
+    } 
+  
+   
+  //present the next set of questions and answers 
+  function resetPage() {
+    questionActual.innerText = ""; 
+    i++; 
+    console.log(i); 
+    questionActual.innerText = questionsArray[i].question;
+    while (answerButtonsElement.firstChild) {
+      answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+    } 
+  }
 
 function timerCountdown() {
   if (clock <= 0){
-    clearInterval(intervalClock); //Need to fix 
+    clearInterval(clock); //Need to fix 
     return; 
   } else{
       clock--; 
@@ -59,14 +71,14 @@ function timerCountdown() {
     }
   }
 
-
+ // 4 questions in an array
 const questionsArray = [
   {
     question: 'Which part of the html is the correct place to insert the JavaScript source file?', 
     answers: [
       {text: '1. The head', correct: false}, 
       {text: '2. The title', correct: false}, 
-      {text: '3. The begining of the body', correct: false}, 
+      {text: '3. The beginning of the body', correct: false}, 
       {text: '4. The end of the body', correct: true}
     ]
   }, 
