@@ -46,11 +46,17 @@ function startQuiz() {
 //function for each consecutive question 
 function showFirstQuestion() {
   //If there are any buttons present, delete them first 
+  
   while (answerButtonsElement.firstChild) {
     answerButtonsElement.removeChild(answerButtonsElement.firstChild);
   }
   // check if we have run out of questions. If so, go to the final page: 
- 
+  console.log("var i = " + i);
+  console.log("questionsArray is " + questionsArray.length);
+  if ( i+1 > questionsArray.length) {
+    lastPage(); 
+    return; 
+  }
  questionActual.innerText = questionsArray[i].question; 
  questionsArray[i].answers.forEach(answer => {
    const button = document.createElement('button');
@@ -70,10 +76,6 @@ function showFirstQuestion() {
   })
   //increment the question index 
   i++; 
-  if ( i >= questionsArray.length) {
-    lastPage(); 
-    
-  }
 }
 
 //function to compare selection with correct answer 
@@ -82,7 +84,7 @@ function compareSelection(e) {
   var userSelection = e.target; 
   var correctOrNot = userSelection.dataset.correct; 
   if (correctOrNot){
-    score++; 
+    score += 10;  
   } else {
     clock = clock - penalty; 
 
@@ -95,27 +97,27 @@ function compareSelection(e) {
 //Create end of quiz display
 function lastPage() {
   // Make sure the clock clears and there is nothing on the page. 
-  clock= 0;  
-  clearInterval(intervalClock); 
+  clock = 0; 
   questionEl.innerHTML = "<h1>End of Quiz! Here are your results:</h1>"; 
-  questionEl.className = "endpage"; // need to fix 
   clockEl.innerHTML = ""; 
  
   //create a paragraph to write results in 
     
-  var createParaText = document.createElement("p"); 
-  createParaText.textContent = "You final score is " + score;
-  questionEl.appendChild(createParaText);  
+  var createPara = document.createElement("p"); 
+  createPara.setAttribute('id', 'question');
+  createPara.textContent = "You final score is " + score;
+  questionEl.appendChild(createPara);  
   
   var initialsPlease = document.createElement('label'); 
   initialsPlease.setAttribute('id', 'initials'); // Need to make in CSS
   initialsPlease.textContent = "Enter your initials: "; 
+  questionEl.appendChild(initialsPlease); 
 
   var formEntry = document.createElement('input'); 
   formEntry.setAttribute('type', 'text'); 
-  formEntry.setAttribute('id', 'intials'); 
-  formEntry.textContent = "Enter Here"; 
-  questionActual.appendChild(formEntry); 
+  formEntry.setAttribute('id', 'initials'); 
+  formEntry.innerText = "Enter Here"; 
+  questionEl.appendChild(formEntry); 
 
   
 
