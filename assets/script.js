@@ -5,32 +5,47 @@ const questionActual = document.getElementById('question');
 const clockEl = document.getElementById('clock-counter'); 
 const answerButtonsElement = document.getElementById('answer-buttons')
 
+
 var i = 0; 
-var clock = 7; 
+var clock = 30; 
 var score = 0; 
 var penalty = 5; 
 //Need to declare a variable for the setInterval/clearInterval 
 var intervalClock = 0; 
 
-//Add event listener for Start Button 
-startButton.addEventListener('click', startQuiz);
+//Add event listener for Start Button & set the clock 
+startButton.addEventListener('click', function() {
 
+  if (intervalClock === 0){
+      intervalClock = setInterval(function() {
+        clock--; 
+        clockEl.innerText = ('Time: ' + clock); 
+
+        if (clock <= 0) {
+          clearInterval(intervalClock); 
+          lastPage(); 
+          clockEl.textContent = "No more time!"; 
+        }
+      }, 1000); 
+  }
+    startQuiz(); 
+});
 
 
 //Function for beginning quiz 
 function startQuiz() {
-//Start the countdown clock 
-var intervalClock = setInterval(timerCountdown, 1000);
-//Hide the start button
-startButton.className = "hidden"; 
-//Remove the hidden class and therefor display:none from the Quiz question container 
-questionEl.classList.remove("hidden");
-showFirstQuestion(); 
-}
+  //Hide the start button
+  startButton.className = "hidden"; 
+  //Remove the hidden class and therefor display:none from the Quiz question container 
+  questionEl.classList.remove("hidden");
+  //Call the first question function 
+  showFirstQuestion(); 
+  }
+
 
 //function for each consecutive question 
 function showFirstQuestion() {
-  
+  //If there are any buttons present, delete them first 
   while (answerButtonsElement.firstChild) {
     answerButtonsElement.removeChild(answerButtonsElement.firstChild);
   }
@@ -44,15 +59,14 @@ function showFirstQuestion() {
    answerButtonsElement.appendChild(button);
 
      // this if statement is just counting everything by accident, all true and false so need to fix! 
-   if (answer.correct) {
+     if (answer.correct) {
      button.dataset.correct = answer.correct; 
-     localStorage.setItem("PlayerScore", JSON.stringify(score));
-     score++;
-     console.log(score);
+     /*localStorage.setItem("PlayerScore", JSON.stringify(score));
+     */
      
-   }
+   } 
 
-   button.addEventListener('click', showFirstQuestion);
+   button.addEventListener('click', compareSelection);
   })
   //increment the question index 
   i++; 
@@ -62,10 +76,27 @@ function showFirstQuestion() {
   }
 }
 
+//function to compare selection with correct answer 
+function compareSelection(e) {
+
+  var userSelection = e.target; 
+  var correctOrNot = userSelection.dataset.correct; 
+  if (correctOrNot){
+    score++; 
+  } else {
+    clock = clock - penalty; 
+
+  }
+  console.log(correctOrNot);
+  showFirstQuestion(); 
+  
+}
+
 //Create end of quiz display
 function lastPage() {
   // Make sure the clock clears and there is nothing on the page. 
-  clock=0;  
+  clock= 0;  
+  clearInterval(intervalClock); 
   questionEl.innerHTML = "<h1>End of Quiz! Here are your results:</h1>"; 
   questionEl.className = "endpage"; // need to fix 
   clockEl.innerHTML = ""; 
@@ -91,18 +122,7 @@ function lastPage() {
 
 }
 
-function timerCountdown() {
-  //If the timer runs out, you need to clear the setinterval and reveal the final page
-  if (clock === 0){
-    clearInterval(intervalClock); 
-    lastPage(); 
-    return; 
-  } else{
-      clock--; 
-      clockEl.innerText = ('Time: ' + clock); 
-      return clock; 
-    }
-  }
+
 
  // 4 questions in an array
 const questionsArray = [
