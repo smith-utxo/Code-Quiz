@@ -4,15 +4,17 @@ const questionEl = document.getElementById('quiz-question-container');
 const questionActual = document.getElementById('question'); 
 const clockEl = document.getElementById('clock-counter'); 
 const answerButtonsElement = document.getElementById('answer-buttons')
-
+const h1endGame = document.getElementById('endGame'); 
+const myForm = document.getElementById('myForm'); 
+const mostRecentScore = localStorage.getItem('mostRecentScore'); 
 
 var i = 0; 
-var clock = 30; 
+var clock = 60; 
 var score = 0; 
 var penalty = 5; 
 //Need to declare a variable for the setInterval/clearInterval 
 var intervalClock = 0; 
-
+ 
 //Add event listener for Start Button & set the clock 
 startButton.addEventListener('click', function() {
 
@@ -84,7 +86,7 @@ function compareSelection(e) {
   var userSelection = e.target; 
   var correctOrNot = userSelection.dataset.correct; 
   if (correctOrNot){
-    score += 10;  
+    score += 1;  
   } else {
     clock = clock - penalty; 
 
@@ -94,36 +96,46 @@ function compareSelection(e) {
   
 }
 
+
+//form event listener when submitting initials
+myForm.addEventListener("submit", function (event){
+  // dont reload the page 
+ event.preventDefault(); 
+  // Capture the user Initials and store in inputInitials 
+ var inputInitials = document.getElementById('inputvalue'); 
+ //Initilize empty high Scores array in local storage
+ const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+ //Save the user Score in mostRecentScore
+ var mostRecentScore = localStorage.getItem('mostRecentScore');
+ //store the most recent score and user initials in an object
+ var scoreObj = {
+  score: mostRecentScore, 
+  name: inputInitials.value
+}
+highScores.push(scoreObj); 
+localStorage.setItem("PlayerDataObj", JSON.stringify(highScores)); 
+
+location.replace("highScores.html"); 
+
+})
+
 //Create end of quiz display
 function lastPage() {
   // Make sure the clock clears and there is nothing on the page. 
   clock = 0; 
   questionEl.innerHTML = "<h1>End of Quiz! Here are your results:</h1>"; 
   clockEl.innerHTML = ""; 
+  localStorage.setItem('mostRecentScore', score); 
  
   //create a paragraph to write results in 
     
   var createPara = document.createElement("p"); 
   createPara.setAttribute('id', 'question');
-  createPara.textContent = "You final score is " + score;
+  createPara.textContent = "You got " + score + "/4 correct!";
   questionEl.appendChild(createPara);  
   
-  var initialsPlease = document.createElement('label'); 
-  initialsPlease.setAttribute('id', 'initials'); // Need to make in CSS
-  initialsPlease.textContent = "Enter your initials: "; 
-  questionEl.appendChild(initialsPlease); 
-
-  var formEntry = document.createElement('input'); 
-  formEntry.setAttribute('type', 'text'); 
-  formEntry.setAttribute('id', 'initials'); 
-  formEntry.innerText = "Enter Here"; 
-  questionEl.appendChild(formEntry); 
-
-  
-
-
-}
-
+  myForm.classList.remove('hidden'); 
+ }
 
 
  // 4 questions in an array
