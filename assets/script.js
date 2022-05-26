@@ -53,8 +53,6 @@ function showFirstQuestion() {
     answerButtonsElement.removeChild(answerButtonsElement.firstChild);
   }
   // check if we have run out of questions. If so, go to the final page: 
-  console.log("var i = " + i);
-  console.log("questionsArray is " + questionsArray.length);
   if ( i+1 > questionsArray.length) {
     lastPage(); 
     return; 
@@ -104,7 +102,7 @@ myForm.addEventListener("submit", function (event){
   // Capture the user Initials and store in inputInitials 
  var inputInitials = document.getElementById('inputvalue'); 
  //Initilize empty high Scores array in local storage
- const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+ var highScores = JSON.parse(localStorage.getItem('highScores')) || [];
  //Save the user Score in mostRecentScore
  var mostRecentScore = localStorage.getItem('mostRecentScore');
  //store the most recent score and user initials in an object
@@ -112,8 +110,9 @@ myForm.addEventListener("submit", function (event){
   score: mostRecentScore, 
   name: inputInitials.value
 }
+// push the object into highScores Array 
 highScores.push(scoreObj); 
-localStorage.setItem("PlayerDataObj", JSON.stringify(highScores)); 
+localStorage.setItem("highScores", JSON.stringify(highScores)); 
 
 location.replace("highScores.html"); 
 
