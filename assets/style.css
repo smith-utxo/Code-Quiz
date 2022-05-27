@@ -117,6 +117,14 @@ a {
   padding: 5px; 
 }
 
+#clear-scores {
+  margin-top: 30px; 
+  font-size: 2rem; 
+  border-radius: 5px;
+  box-shadow: 0 0 10px 2px black; 
+  padding: 5px; 
+}
+
 #scores-container {
   display: block;  
   padding: 10px; 
